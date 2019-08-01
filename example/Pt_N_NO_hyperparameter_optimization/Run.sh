@@ -1,0 +1,1 @@
+python ../../bin/lcnn.py train ./model ./data --split 467 117 
