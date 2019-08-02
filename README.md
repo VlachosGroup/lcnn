@@ -1,6 +1,6 @@
 Lattice Convolutional Neural Network (LCNN)
 ===========================================
-The lattice convolutional neural network (LCNN) is a Python library for deep learning of lattice system developed by the Vlachos group at the University of Delaware and Jung group at KAIST. The model has been built in hope to improve upon cluster expansion methods,  linear regression based on the clusters in the lattice. The LCNN performs better than the cluster expansion and cluster expansion based machine learning methods with sufficient number of data points. See below for the documentations.
+The lattice convolutional neural network (LCNN) is a Python library for deep learning of lattice system developed by the Vlachos group at the University of Delaware and Jung group at KAIST. The model has been built in hope to improve upon cluster expansion methods,  linear regression based on the clusters in the lattice. The LCNN performs better than the cluster expansion and cluster expansion based machine learning methods with sufficient number of data points. Please submit issues to this github page for any mistakes, or improvements! See below for the documentations.
 
 Developers
 ----------
@@ -37,14 +37,10 @@ Jonathan Lym, Geun Ho Gu, Yousung Jung, Dionisios G. Vlachos, "Lattice Convoluti
 
 Getting Started
 ===============
-Please submit issues to this github page for any mistakes, or improvements.
-
-Let's apply to my system right now!
------------------------------------
-LCNN package is a very lightweight package that has a very simple interface. Training, validation, testing, and model usage can be all done with lcnn_run.py in lcnn/bin folder. 
+LCNN package is a lightweight package that has a simple interface. Training, validation, testing, and model usage can be all done with lcnn_run.py in lcnn/bin folder. 
 
 ### Preparing LCNN input
-We implemented a simple input format applicable to any lattice. A working example is in lcnn/example/Pt_N_NO_single_set_training/data folder. Our data loader requires the information on the primitive cell in a file called "input.in". "input.in" has a format of:
+We implemented a concise input format applicable to any lattice. A working example is in lcnn/example/Pt_N_NO_single_set_training/data folder. Our data loader requires the information on the primitive cell in a file called "input.in". "input.in" has a format of:
 ```
 [comment]
 [ax] [ay] [az] [pbc]
@@ -64,9 +60,10 @@ We implemented a simple input format applicable to any lattice. A working exampl
 -  pbc is either T or F, indicating the periodic boundary condition.
 -  os# is the name of the possible occupation state (interpretted as string). All site types share the same set of possible occupancy state.
 -  site1a, site1b, site1c are the scaled coordinates of site 1.
--  site type can be either S1, S2, ... or A1, A2,... indicating spectator site and its index, and active site and its index respectively.
+-  Site type can be either S1, S2, ... or A1, A2,... indicating spectator site and its index, and active site and its index respectively.
 
 Active sites are the sites where the occupancy states can change. We adopted spectator site as well, state of which does not change, in order to impose constraint on symmetry. 
+
 Example:
 ```
 #Primitive Cell
@@ -98,7 +95,8 @@ The input format for a data point is similar:
 [site2a] [site2b] [site2c] [site type] [occupation state if active site]
 ...
 ```
-- property value indicates the trained value. It must start with #y=...
+-  Property value indicates the trained value. It must start with #y=...
+-  Data points' cell must be a redefined lattice of the primitive cell. 
 Example:
 ```
 #y=-1.209352
