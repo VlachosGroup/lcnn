@@ -335,7 +335,7 @@ class SiteEnvironment(object):
         elif len(self.G.edges) != len(G.edges):
             print(len(self.G.edges),len(G.edges))
             s = 'Number of edges is not equal.\n'
-            s += '- Is this a supercell of primitive cell?\n'
+            s += "- Is the data point's cell a redefined lattice of primitive cell?\n"
             s += '- If relaxed structure is used, you may want to check structure or increase Gatol\n'
             if path:
                 s += path
@@ -347,7 +347,7 @@ class SiteEnvironment(object):
         ######################## Most Time Consuming Part #####################
         if not ams:
             s = 'No isomorphism found.\n'
-            s += '- Is this a supercell of primitive cell?\n'
+            s += "- Is the data point's cell a redefined lattice of primitive cell?\n"
             s += '- If relaxed structure is used, you may want to check structure or increase rtol\n'
             if path:
                 s += path
@@ -368,7 +368,7 @@ class SiteEnvironment(object):
             return ams[mini]
         else:
             s = 'No isomorphism found.\n'
-            s += '-Consider increasing tol'
+            s += '-Consider increasing neighbor finding tolerance'
             raise ValueError(s)
         
     def _kabsch(self, P, Q):
