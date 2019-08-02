@@ -111,7 +111,7 @@ Example:
  0.500000499894  0.622008360788  0.454395429618 S1
  0.000000000000  0.666667212896  0.502346789304 A1 1
 ```
-**Important Note:** The code extracts site local environment from the primitive cell, and perform graph matching and distance matching to find neighbor list in data. It is **highly recommended** that data are supercells of the primitive cell, specifically, the coordinates of sites in data are perfect, non-deviated lattice. If you are using relaxed structure, you can play with graph matching tolerance in the initialization of SiteEnvironment class at lcnn/data/UniversalLoader.py, but it may not work well depending on your system.
+**Important Note:** The code extracts site local environment from the primitive cell, and perform graph matching and distance matching to find neighbor list in data. It is **highly recommended** that cells of data are directly redefined from the primitive cell, specifically, the relative coordinates between sites are consistent so that the lattice is non-deviated. If you are using relaxed structure, you can play with graph matching tolerance in the initialization of SiteEnvironment class at lcnn/data/UniversalLoader.py, but it may not work well depending on your system.
 
 **Additional Note:**
 The current method implements graph matching, and diagonalization to find neighbors, so it can take some time to preprocess data to produce representation for LCNN. Implementing neighbor finding algorithm specific to your system can save computation time (see lcnn/data/Data.py for additional instruction for this). The current implementation can process ~1000 data points within an hour. 
