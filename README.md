@@ -1,6 +1,6 @@
 Lattice Convolutional Neural Network (LCNN)
 ===========================================
-The lattice convolutional neural network (LCNN) is a Python library for deep learning of lattice system developed by the Vlachos group at the University of Delaware and Jung group at KAIST. The model has been built in hope to improve upon cluster expansion methods,  linear regression based on the clusters in the lattice. The LCNN performs better than the cluster expansion based methods with sufficient number of data points. See below for the documentations.
+The lattice convolutional neural network (LCNN) is a Python library for deep learning of lattice system developed by the Vlachos group at the University of Delaware and Jung group at KAIST. The model has been built in hope to improve upon cluster expansion methods,  linear regression based on the clusters in the lattice. The LCNN performs better than the cluster expansion and cluster expansion based machine learning methods with sufficient number of data points. See below for the documentations.
 
 Developers
 ----------
@@ -65,6 +65,8 @@ We implemented a simple input format applicable to any lattice. A working exampl
 -  os# is the name of the possible occupation state (interpretted as string). All site types share the same set of possible occupancy state.
 -  site1a, site1b, site1c are the scaled coordinates of site 1.
 -  site type can be either S1, S2, ... or A1, A2,... indicating spectator site and its index, and active site and its index respectively.
+
+Active sites are the sites where the occupancy states can change. We adopted spectator site as well, state of which does not change, in order to impose constraint on symmetry. 
 Example:
 ```
 #Primitive Cell
