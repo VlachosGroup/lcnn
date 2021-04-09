@@ -4,7 +4,7 @@ The lattice convolutional neural network (LCNN) is a Python library for deep lea
 
 Developers
 ----------
-Geun Ho Gu (ghgu@kaist.ac.kr) <- Current maintainer
+Geun Ho Gu (ggu@udel.edu) <- Current maintainer
 
 Dependencies
 ------------
