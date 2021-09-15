@@ -10,10 +10,11 @@ Dependencies
 ------------
 -  Python3
 -  Numpy
--  Tensorflow (>1.10)
+-  Tensorflow (1.4.0 confirmed)
 -  Pymatgen
 -  Scipy
 -  Networkx
+-  Pathos (optional for parallel data preprocessing)
 
 Installation
 ------------

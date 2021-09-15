@@ -14,6 +14,8 @@ import json
 import os
 from collections import defaultdict
 import logging
+from time import time
+from datetime import datetime
 
 from pymatgen import Element, Structure, Molecule, Lattice
 from pymatgen.symmetry.analyzer import PointGroupAnalyzer
@@ -29,16 +31,15 @@ __all__ = [
 
 # TQDM substitute for stdout
 class Progress(object):
-    def __init__(self, iterator , ndata, step = 1000):
+    def __init__(self, iterator , ndata, step = 100):
         logging.getLogger().setLevel(logging.INFO)
         self.iter = iterator.__iter__()
         self.t = time()
         self.ndata = ndata
         self.step = step
         self.i = 0
-        s = ' '.join(datetime.now().strftime("[%H:%M:%S]"),'0','/',self.ndata)
+        s = '%s 0 / %d'%(datetime.now().strftime("[%H:%M:%S]"),self.ndata)
         logging.info(s)
-        
         
     def __iter__(self):
         return self
@@ -46,8 +47,8 @@ class Progress(object):
     def __next__(self):
         self.i += 1
         if self.i%self.step == 0:
-            s = ' '.join(datetime.now().strftime("[%H:%M:%S]"),self.i,'/',self.ndata,\
-            '| %.2f/1000 sec/data |'%((time()-self.t)/self.i*self.step), '~%.2f sec left'%((self.ndata-self.i)/self.i*(time()-self.t)))
+            s = '%s %d / %d | %.2f/%d sec/data | ~%.2f sec left'%(datetime.now().strftime("[%H:%M:%S]"),self.i,self.ndata,\
+            (time()-self.t)/self.i*self.step,self.step,(self.ndata-self.i)/self.i*(time()-self.t))
             logging.info(s)
         return next(self.iter)
 
@@ -672,7 +673,7 @@ class UniversalLoader(DataLoader):
             XNSs = []
             # parallization
             try: 
-                import multiprocessing
+                import pathos.multiprocessing as multiprocessing
                 p = multiprocessing.Pool() 
             except:
                 multiprocessing = None
@@ -687,7 +688,7 @@ class UniversalLoader(DataLoader):
             else:
                 gen = map(SEnvs.ReadDatum,inputs)
                 
-            for y, xSites, xNSs in Progress(gen,ndata = len(raw_data)):
+            for y, xSites, xNSs in Progress(gen,ndata = len(inputs)):
                 Y.append(y)
                 XSites.append(xSites)
                 XNSs.append(xNSs)
