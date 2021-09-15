@@ -65,8 +65,8 @@ def get_parser():
         help='Epochs without improvement in validation before termination \
         (default:%(default)s)',
         default=5000)
-    training_parser.add_argument('--split', type=int, nargs=2,
-        help='Split data into [train] [validation] and remaining for testing',
+    training_parser.add_argument('--split', type=int, nargs=3,
+        help='Split data into [train] [validation] [test] and remaining for testing',
         default=None)
     training_parser.add_argument('--seed', type=int, 
         help='seed for spliting data',

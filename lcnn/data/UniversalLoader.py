@@ -13,6 +13,7 @@ import numpy as np
 import json
 import os
 from collections import defaultdict
+import logging
 
 from pymatgen import Element, Structure, Molecule, Lattice
 from pymatgen.symmetry.analyzer import PointGroupAnalyzer
@@ -25,7 +26,31 @@ __all__ = [
         'UniversalLoader',
         'UniversalLoaderInputWriter'
         ]
+
+# TQDM substitute for stdout
+class Progress(object):
+    def __init__(self, iterator , ndata, step = 1000):
+        logging.getLogger().setLevel(logging.INFO)
+        self.iter = iterator.__iter__()
+        self.t = time()
+        self.ndata = ndata
+        self.step = step
+        self.i = 0
+        s = ' '.join(datetime.now().strftime("[%H:%M:%S]"),'0','/',self.ndata)
+        logging.info(s)
         
+        
+    def __iter__(self):
+        return self
+        
+    def __next__(self):
+        self.i += 1
+        if self.i%self.step == 0:
+            s = ' '.join(datetime.now().strftime("[%H:%M:%S]"),self.i,'/',self.ndata,\
+            '| %.2f/1000 sec/data |'%((time()-self.t)/self.i*self.step), '~%.2f sec left'%((self.ndata-self.i)/self.i*(time()-self.t)))
+            logging.info(s)
+        return next(self.iter)
+
 def InputReader(path):
     """Read Input Files
     The input format for primitive cell is:
@@ -635,6 +660,7 @@ class UniversalLoader(DataLoader):
         seed : random seed for spliting data points
         """
         
+        
         cutoff = np.around(cutoff,2)
         if not os.path.exists(os.path.join(datapath,'data_%4.2f.json'%(cutoff))):
             input_path = 'input.in'
@@ -644,12 +670,32 @@ class UniversalLoader(DataLoader):
             Y = []
             XSites = []
             XNSs = []
-            for dpath in SEnvs.dnames:
-                dpath = os.path.join(datapath,dpath)
-                y, xSites, xNSs = SEnvs.ReadDatum(dpath) # Patient is the virtue
+            # parallization
+            try: 
+                import multiprocessing
+                p = multiprocessing.Pool() 
+            except:
+                multiprocessing = None
+                
+            inputs = [os.path.join(datapath,dpath) for dpath in SEnvs.dnames]
+            import random
+            if seed is not None: random.seed(seed)
+            random.shuffle(inputs)
+            
+            if multiprocessing is not None:
+                gen = p.imap_unordered(SEnvs.ReadDatum,inputs)
+            else:
+                gen = map(SEnvs.ReadDatum,inputs)
+                
+            for y, xSites, xNSs in Progress(gen,ndata = len(raw_data)):
                 Y.append(y)
                 XSites.append(xSites)
                 XNSs.append(xNSs)
+                
+            if multiprocessing is not None:
+                p.close()
+                p.join()    
+                
             json.dump((Y,XSites,XNSs),open(os.path.join(datapath,'data_%4.2f.json'%(cutoff)),'w'))
         else:
             Y, XSites, XNSs = json.load(open(os.path.join(datapath,'data_%4.2f.json'%(cutoff)),'r'))
@@ -668,9 +714,9 @@ class UniversalLoader(DataLoader):
             for i in range(len(XSites)):
                 if i < split[0]:
                     Split['Train'].append(randidx[i])
-                elif i > split[0] and i < split[0] + split[1]+1:
+                elif i > split[0] and i < split[0] + split[1] + 1:
                     Split['Validation'].append(randidx[i])
-                else:
+                elif i > split[0] + split[1] and i < split[0] + split[1] + split[2] + 1:
                     Split['Test'].append(randidx[i])
             if not os.path.exists(modelpath):
                 os.mkdir(modelpath)
